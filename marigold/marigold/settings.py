@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'rest_framework',
+    # 'rest_framework',
     'corsheaders',
     'recipe.apps.RecipeConfig',
     'django.contrib.admin',
