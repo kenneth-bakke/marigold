@@ -1,35 +1,24 @@
 import React, { useState, useEffect, Fragment } from 'react';
-
-import AppContext from './AppContext.js';
+import getCookie from './utils/getCookie.js';
+import RecipeForm from './Recipe/RecipeForm.jsx';
+import RecipeView from './Recipe/RecipeView.jsx';
+import NavHeader from './NavHeader/NavHeader.jsx';
 import Sidebar from './Sidebar/Sidebar.jsx';
 import items from './Sidebar/variables.js';
-// import RecipeList  from './Recipe/RecipeList.jsx';
-// import RecipeView from './Recipe/RecipeView.jsx';
-import RecipeForm from './Recipe/RecipeForm.jsx';
+import AppContext from './AppContext.js';
 
 const baseURL = 'http://localhost:8000/recipe'
 
 export default function App () {
   const [recipes, setRecipes] = useState([]);
   const [selectedRecipe, setSelectedRecipe] = useState({});
-  const [addRecipe, setAddRecipe] = useState(false);
-  const [newRecipe, setNewRecipe] = useState({});
-  const [view, setView] = useState('Add');
-  const views = ['Add', 'Page', 'List'];
+  const [system, setSystem] = useState('Metric');
+  const [view, setView] = useState('Form');
+  const csrftoken = getCookie('csrftoken');
+  const views = ['Form', 'Recipe']
 
   useEffect(() => {
     let clearId = setTimeout(() => {
-      const getRecipes = async () => {
-        try {
-          const response = await fetch(`${baseURL}/recipes`);
-          setRecipes(response);
-          setSelectedRecipe(response[0])
-          console.log(response.body);
-        } catch (err) {
-          console.error(err);
-        }
-      }
-
       getRecipes();
     }, 100)
 
@@ -38,13 +27,35 @@ export default function App () {
     }
   }, [])
 
+  const getRecipes = () => {
+    fetch(`${baseURL}/recipes`)
+    .then(res => res.json())
+    .then(data => {
+      setRecipes(data)
+    })
+    .catch(err => console.error(err));
+  }
+
   const selectRecipe = (recipe) => {
     setSelectedRecipe(recipe);
   }
 
   const postRecipe = async (recipe) => {
     try {
-      await fetch(`${baseURL}/save`, newRecipe);
+      const response = await fetch(`${baseURL}/recipes/`, {
+        method: 'POST',
+        cache: 'no-cache',
+        referrerPolicy: 'no-referrer',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify(recipe)
+      });
+      getRecipes();
+      selectRecipe(recipe);
+      setView(views[1])
     } catch (err) {
       console.error(err);
     }
@@ -54,20 +65,18 @@ export default function App () {
     <Fragment>
       <AppContext.Provider value={{
         recipesContext: [recipes, setRecipes],
-        ingredientsContext: [ingredients, setIngredients],
         selectedRecipeContext: [selectedRecipe, setSelectedRecipe],
-        newRecipeContext: [newRecipe, setNewRecipe]
+        systemContext: [system, setSystem],
+        viewContext: [view, setView]
       }}>
-        <div className="header" >
-          <i href="../public/favicon,ico" />
-          <h1 className="header-text" >{view} Recipe </h1>
-        </div>
+        <NavHeader />
         <div className="ui container" >
-          <Sidebar items={items}/>
-          <RecipeForm postRecipe={postRecipe} />
+          <Sidebar items={items} />
+          {view === 'Form' ? <RecipeForm postRecipe={postRecipe} />
+          : view === 'Recipe' ? <RecipeView /> : null
+          }
+          {/* <RecipeView recipe={selectedRecipe} /> */}
         </div>
-          {/* <RecipeList selectRecipe={selectRecipe}/> */}
-          {/* <RecipeView /> */}
       </AppContext.Provider>
     </Fragment>
   );

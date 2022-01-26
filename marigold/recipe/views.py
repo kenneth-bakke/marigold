@@ -1,34 +1,42 @@
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from . models import *
-from . serializer import *
-
+from recipe.serializer import RecipeSerializer
+from recipe.models import Recipe, Ingredients
 import json
 
+# Send up built React app
 def index(request):
   print(request)
   return render(request, 'build/index.html')
-  # return HttpResponse('This is the Index view endpoint')
 
+@csrf_exempt
 def recipes(request):
+
+  # Grab all recipes from db and send back to client as JSON
   if request.method == 'GET':
-    recipes_list = Recipe.objects.order_by('recipe_title')
-    response = list(recipes_list)
-    print(response)
-    return HttpResponse(response)
+    recipe_list = Recipe.objects.all()
+    serializer = RecipeSerializer(recipe_list, many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+  # Convert JSON to Recipe model and save to db
   if request.method == 'POST':
-    print(request);
+    body = json.loads(request.body.decode('utf-8'))
+    recipe = Recipe(
+      recipe_title=body['recipe_title'],
+      yield_amount=body['yield_amount'],
+      yield_type=body['yield_type'],
+      system=body['system'],
+      ingredients=body['ingredients'],
+      method=body['method'],
+    )
 
-  # Get the ingredients array from the body and save that in the ingredients JSONField() on Recipe model
-  #   # ingredients_list = request.body.ingredients
-  #   Recipe.objects.create(ingredients=)
-  # Make sure to do a Recipe.objects.save/create for the other fields too
+    recipe.save()
+    return HttpResponse(recipe)
 
-def settings(request):
-  return HttpResponse('This is the Settings view endpoint')
-
+# Eventually store ingredients and reference from recipe by... name? id?
 def ingredients(request):
   latest_ingredients_list = Ingredients.objects.order_by('ingredient_name')
   response = list(latest_ingredients_list)
@@ -37,6 +45,9 @@ def ingredients(request):
 
 
 
+# Placeholder
+def settings(request):
+  return HttpResponse('This is the Settings view endpoint')
 
 
 

@@ -2,21 +2,27 @@ import React, { useState, useEffect, useContext, Fragment } from 'react';
 import AppContext from '../AppContext.js';
 import IngredientField from './IngredientField.jsx';
 import IngredientFieldList from './IngredientFieldList.jsx';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 
 export default function RecipeForm({ postRecipe }) {
-  const { newRecipeContext } = useContext(AppContext);
-  const [newRecipe, setNewRecipe] = newRecipeContext;
-  const [ingredientCount, setingredientCount] = useState(1);
-  const [ingredientFields, setIngredientFields] = useState([]);
+  const { systemContext } = useContext(AppContext);
+  const [system, setSystem] = systemContext;
   const [ingredients, setIngredients] = useState([]);
-  const [title, setTitle] = useState('');
-  const [recipeYield, setRecipeYield] = useState(0);
-  const [recipeYieldType, setRecipeYieldType] = useState('');
-  const [method, setMethod] = useState('');
+  const [ingredientFields, setIngredientFields] = useState([]);
+  const [ingredientCount, setingredientCount] = useState(1);
+  const [recipe, setRecipe] = useState({ingredients: ingredients})
+  const [valid, setValid] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
+    let clearId = setTimeout(() => {
+      setRecipe({...recipe, ingredients: ingredients});
+    }, 400)
 
-  }, [ingredientFields])
+    return () => clearTimeout(clearId);
+  }, [ingredients])
 
   const addIngredientField = () => {
     setingredientCount(ingredientCount + 1);
@@ -29,35 +35,61 @@ export default function RecipeForm({ postRecipe }) {
     addIngredientField();
   }
 
+  const updateRecipe = (e, field) => {
+    if (field === 'Metric' || field === 'Imperial') {
+      setRecipe({...recipe, system: field })
+      setSystem(field)
+    } else {
+      setRecipe({...recipe, [field]: e.target.value})
+    }
+  }
+
   const saveRecipe = (e) => {
     e.preventDefault()
-    let recipe = {
-      title: title,
-      yield: recipeYield,
-      yieldType: recipeYieldType,
-      ingredients: ingredients,
-      method: method
+    checkRecipeValidity()
+    if (valid && !saved) {
+      setSaved(true);
+      postRecipe(recipe);
+    } else {
+      alert('Looks like you\'re missing part of the recipe!')
     }
-    setNewRecipe(recipe);
+  }
+
+  const checkRecipeValidity = () => {
+    if (
+      !recipe.recipe_title ||
+      !recipe.yield_amount ||
+      !recipe.yield_type
+    ) {
+      setValid(false)
+    } else {
+      setValid(true);
+    }
   }
 
   return (
-    <Fragment>
-      <form onClick={(e) => saveRecipe(e)} className="ui form" >
-        <label for="Title" />
-        <input type="text" name="Title" placeholder="Recipe Title" onChange={(e) => setTitle(e.target.value)} required="required" />
+    <div className="ui form">
+      <h1 className="header-text" > Add Recipe </h1>
+      <form className="ui form" >
+        <input type="text" name="Title" placeholder="Recipe Title" onChange={(e) => updateRecipe(e, 'recipe_title')} required="required" autoFocus={true} />
         <span className="yield-input">
-          <label for="Yield" />
-          <input type="text" name="Yield quantity" placeholder="Yield Quantity" onChange={(e) => setRecipeYield(e.target.value)} required="required" />
-          <label for="Yield type" />
-          <input type="text" name="Yield type" placeholder="Yield type" onChange={(e) => setRecipeYieldType(e.target.value)} required="required" />
+          <input type="text" name="Yield quantity" placeholder="Yield Quantity" onChange={(e) => updateRecipe(e, 'yield_amount')} required="required" />
+          <input type="text" name="Yield type" placeholder="Yield type" onChange={(e) => updateRecipe(e, 'yield_type')} required="required" />
+          <div className="system-container">
+            <label htmlFor="Metric" ><h4>Metric</h4></label>
+            <input type="radio" name="system"  defaultChecked={system === 'Metric' ? true : false }  onClick={(e) => updateRecipe(e, 'Metric')} />
+            <label htmlFor="Imperial" ><h4>Imperial </h4></label>
+            <input type="radio" name="system"  defaultChecked={system === 'Imperial' ? true : false } onClick={(e) => updateRecipe(e, 'Imperial')} />
+          </div>
         </span>
         <IngredientField id={ingredientCount} updateIngredients={updateIngredients} />
-        <textarea onChange={(e) => setMethod(e.target.value)} placeholder="Method" ></textarea>
-        <button onClick={(e) => saveRecipe(e)} >SaveRecipe</button>
+        <textarea onChange={(e) => updateRecipe(e, 'method')} placeholder="Method" ></textarea>
+        <button onClick={(e) => saveRecipe(e)} >{saved ? 'Saved!' : 'SaveRecipe'}</button>
       </form>
-      <h3>Ingredients</h3>
+      {/* <h3>{recipe.title ? recipe.title : null}</h3>
+      <h4>{recipe.yield ? recipe.yield : null} {recipe.yieldType ? recipe.yieldType : null}</h4> */}
       <IngredientFieldList ingredients={ingredients} />
-    </Fragment>
+      {/* <h4>{recipe.method}</h4> */}
+    </div>
   )
 }

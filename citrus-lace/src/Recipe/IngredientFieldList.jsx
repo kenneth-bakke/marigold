@@ -9,9 +9,10 @@ export default function IngredientFieldList({ ingredients }) {
   return (
     <Fragment>
       <List disablePadding dense>
+        <ListItem><h3>Ingredients</h3></ListItem>
         {ingredients.map(ingredient => {
           return (
-            <ListItem dense>
+            <ListItem dense key={ingredient.name}>
               <ListItemText>
                 {ingredient.quantity} {ingredient.uom} {ingredient.name}
               </ListItemText>

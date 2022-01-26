@@ -1,5 +1,9 @@
 const items = [
   {
+    name: 'add recipe',
+    label: 'Add Recipe',
+  },
+  {
     name: 'favorites',
     label: 'Favorites',
     items: [
@@ -10,13 +14,7 @@ const items = [
   {
     name: 'myRecipes',
     label: 'My Recipes',
-    items: [
-      { name: 'baking', label: 'Baking'},
-      { name: 'pastry', label: 'Pastry'},
-      { name: 'bfast', label: 'Breakfast'},
-      { name: 'lunch', label: 'Lunch'},
-      { name: 'dinner', label: 'Dinner'},
-    ],
+    items: [],
   },
   {
     name: 'myIngredients',
@@ -44,7 +42,9 @@ const items = [
     name: 'settings',
     label: 'Settings',
     items: [
-      { name: 'profile', label: 'Profile', items: [{ name: 'thing', label: 'Thing'}]},
+      { name: 'profile', label: 'Profile'},
+      { name: 'notifications', label: 'Notifications'},
+      { name: 'privacy', label: 'privacy'},
     ]
   },
 ]
