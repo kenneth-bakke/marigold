@@ -12,12 +12,16 @@ class Recipe(models.Model):
   recipe_subtitle = models.CharField(max_length=255)
   yield_amount = models.IntegerField(default=1)
   yield_type = models.CharField(max_length=128)
+  system = models.CharField(max_length=16, default='Metric')
   method = models.CharField(max_length=5000, default='')
-  ingredients = models.JSONField(default=dict);
+  ingredients = models.JSONField(default=dict)
 
   def __str__(self):
-    template = '{0.recipe_title} {0.recipe_subtitle} {0.yield_amount} {0.yield_type} {0.ingredients}'
+    template = '{0.recipe_title} {0.recipe_subtitle} {0.yield_amount} {0.yield_type} {0.system} {0.ingredients} {0.method}'
     return template.format(self)
+
+class Ingredients(models.Model):
+  name = models.CharField(max_length=32)
 
 class Tags(models.Model):
   tag_text = models.CharField(max_length=64)
