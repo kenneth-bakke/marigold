@@ -1,7 +1,7 @@
-import React, { Fragment } from 'react';
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
+import React, { useState, Fragment } from 'react';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 
 function Sidebar ({ items, depthStep, depth }) {
   return (
@@ -19,6 +19,7 @@ function Sidebar ({ items, depthStep, depth }) {
     </div>
   )
 }
+
 
 function SidebarItem ({ label, items, depthStep = 10, depth = 0, ...rest }) {
   return (

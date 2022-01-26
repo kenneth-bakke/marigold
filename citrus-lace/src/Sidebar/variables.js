@@ -11,11 +11,7 @@ const items = [
     name: 'myRecipes',
     label: 'My Recipes',
     items: [
-      { name: 'baking', label: 'Baking'},
-      { name: 'pastry', label: 'Pastry'},
-      { name: 'bfast', label: 'Breakfast'},
-      { name: 'lunch', label: 'Lunch'},
-      { name: 'dinner', label: 'Dinner'},
+
     ],
   },
   {

@@ -2,21 +2,23 @@ import React, { useState, useEffect, useContext, Fragment } from 'react';
 import AppContext from '../AppContext.js';
 import IngredientField from './IngredientField.jsx';
 import IngredientFieldList from './IngredientFieldList.jsx';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 
 export default function RecipeForm({ postRecipe }) {
-  const { newRecipeContext } = useContext(AppContext);
-  const [newRecipe, setNewRecipe] = newRecipeContext;
   const [ingredientCount, setingredientCount] = useState(1);
   const [ingredientFields, setIngredientFields] = useState([]);
   const [ingredients, setIngredients] = useState([]);
-  const [title, setTitle] = useState('');
-  const [recipeYield, setRecipeYield] = useState(0);
-  const [recipeYieldType, setRecipeYieldType] = useState('');
-  const [method, setMethod] = useState('');
+  const [recipe, setRecipe] = useState({ingredients: ingredients})
 
   useEffect(() => {
+    let clearId = setTimeout(() => {
+      setRecipe({...recipe, ingredients: ingredients});
+    }, 400)
 
-  }, [ingredientFields])
+    return () => clearTimeout(clearId);
+  }, [ingredients])
 
   const addIngredientField = () => {
     setingredientCount(ingredientCount + 1);
@@ -29,35 +31,31 @@ export default function RecipeForm({ postRecipe }) {
     addIngredientField();
   }
 
+  const updateRecipe = (e, field) => {
+    setRecipe({...recipe, [field]: e.target.value})
+  }
+
   const saveRecipe = (e) => {
     e.preventDefault()
-    let recipe = {
-      title: title,
-      yield: recipeYield,
-      yieldType: recipeYieldType,
-      ingredients: ingredients,
-      method: method
-    }
-    setNewRecipe(recipe);
+    postRecipe(recipe);
   }
 
   return (
     <Fragment>
-      <form onClick={(e) => saveRecipe(e)} className="ui form" >
-        <label for="Title" />
-        <input type="text" name="Title" placeholder="Recipe Title" onChange={(e) => setTitle(e.target.value)} required="required" />
+      <form className="ui form" >
+        <input type="text" name="Title" placeholder="Recipe Title" onChange={(e) => updateRecipe(e, 'title')} required="required" autoFocus={true} />
         <span className="yield-input">
-          <label for="Yield" />
-          <input type="text" name="Yield quantity" placeholder="Yield Quantity" onChange={(e) => setRecipeYield(e.target.value)} required="required" />
-          <label for="Yield type" />
-          <input type="text" name="Yield type" placeholder="Yield type" onChange={(e) => setRecipeYieldType(e.target.value)} required="required" />
+          <input type="text" name="Yield quantity" placeholder="Yield Quantity" onChange={(e) => updateRecipe(e, 'yield')} required="required" />
+          <input type="text" name="Yield type" placeholder="Yield type" onChange={(e) => updateRecipe(e, 'yieldType')} required="required" />
         </span>
         <IngredientField id={ingredientCount} updateIngredients={updateIngredients} />
-        <textarea onChange={(e) => setMethod(e.target.value)} placeholder="Method" ></textarea>
+        <textarea onChange={(e) => updateRecipe(e, 'method')} placeholder="Method" ></textarea>
         <button onClick={(e) => saveRecipe(e)} >SaveRecipe</button>
       </form>
-      <h3>Ingredients</h3>
+      {/* <h3>{recipe.title ? recipe.title : null}</h3>
+      <h4>{recipe.yield ? recipe.yield : null} {recipe.yieldType ? recipe.yieldType : null}</h4> */}
       <IngredientFieldList ingredients={ingredients} />
+      {/* <h4>{recipe.method}</h4> */}
     </Fragment>
   )
 }

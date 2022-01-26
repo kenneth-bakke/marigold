@@ -27,12 +27,12 @@ SECRET_KEY = 'django-insecure-yo7y0du764n)nfe6hlx44n-84c$u)-_58_m2&kyjx66*$cjjm0
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+CSRF_TRUSTED_ORIGINS = ['https://*.127.0.0.1', 'http://*.127.0.0.1']
 
 # Application definition
 
 INSTALLED_APPS = [
-    # 'rest_framework',
+    'rest_framework',
     'corsheaders',
     'recipe.apps.RecipeConfig',
     'django.contrib.admin',
@@ -132,7 +132,22 @@ STATICFILES_DIRS = [
 
 # Cors allow all
 CORS_ORIGIN_ALLOW_ALL = True # added to solve CORS
-
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost',
+    'http://127.0.0.1'
+)
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 

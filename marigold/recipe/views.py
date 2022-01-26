@@ -1,9 +1,11 @@
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-from rest_framework.views import APIView
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
-from . models import *
+from rest_framework.views import APIView
+from django.shortcuts import render
+from django.http import HttpResponse
+
 from . serializer import *
+from . models import *
 
 import json
 
@@ -12,6 +14,8 @@ def index(request):
   return render(request, 'build/index.html')
   # return HttpResponse('This is the Index view endpoint')
 
+
+@csrf_exempt
 def recipes(request):
   if request.method == 'GET':
     recipes_list = Recipe.objects.order_by('recipe_title')
@@ -19,8 +23,10 @@ def recipes(request):
     print(response)
     return HttpResponse(response)
   if request.method == 'POST':
-    print(request);
-
+    body = json.loads(request.body.decode('utf-8'))
+    for k, v in body.items():
+      print(k, v)
+    return HttpResponse()
   # Get the ingredients array from the body and save that in the ingredients JSONField() on Recipe model
   #   # ingredients_list = request.body.ingredients
   #   Recipe.objects.create(ingredients=)
