@@ -36,6 +36,12 @@ def recipes(request):
     recipe.save()
     return HttpResponse(recipe)
 
+  if request.method == 'DELETE':
+    body = json.loads(request.body.decode('utf-8'))
+    Recipe.objects.filter(id = body).delete();
+    return HttpResponse()
+  # TODO: Add update and delete methods
+
 # Eventually store ingredients and reference from recipe by... name? id?
 def ingredients(request):
   latest_ingredients_list = Ingredients.objects.order_by('ingredient_name')

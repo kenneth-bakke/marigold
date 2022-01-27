@@ -4,7 +4,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
-export default function IngredientFieldList({ ingredients }) {
+export default function IngredientFieldList({ ingredients, removeIngredient }) {
 
   return (
     <Fragment>
@@ -16,6 +16,7 @@ export default function IngredientFieldList({ ingredients }) {
               <ListItemText>
                 {ingredient.quantity} {ingredient.uom} {ingredient.name}
               </ListItemText>
+              <button onClick={() => removeIngredient(ingredient)} >Remove ingredient</button>
             </ListItem>
           )
         })}
