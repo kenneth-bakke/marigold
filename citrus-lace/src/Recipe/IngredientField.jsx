@@ -7,8 +7,7 @@ export default function IngredientField({ id, updateIngredients }) {
   const [system, setSystem] = systemContext;
 
   useEffect(() => {
-    let initialUom = system === 'Metric' ? 'g' : 'oz';
-    setIngredient({...ingredient, 'uom': initialUom})
+    setIngredient({...ingredient, 'uom': 'ea'})
   }, [])
 
   const updateIngredient = (e, field) => {

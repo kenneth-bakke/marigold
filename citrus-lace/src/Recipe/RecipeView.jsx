@@ -2,12 +2,14 @@ import React, { useState, useContext, useEffect, Fragment } from 'react';
 import AppContext from '../AppContext.js';
 import SystemRadio from './SystemRadio.jsx';
 import IngredientsTable from './IngredientsTable.jsx';
+import urls from './urls.js';
 
-export default function RecipeView() {
+export default function RecipeView({ deleteRecipe }) {
   const { selectedRecipeContext, systemContext } = useContext(AppContext);
   const [selectedRecipe, setSelectedRecipe] = selectedRecipeContext;
-  const { recipe_title, yield_amount, yield_type, system, ingredients, method } = selectedRecipe
+  const { id, recipe_title, yield_amount, yield_type, system, ingredients, method } = selectedRecipe
   const [tempSystem, setTempSystem] = useState(system);
+
 
   const switchSystem = (sys) => {
     setTempSystem(sys);
@@ -37,11 +39,12 @@ export default function RecipeView() {
           <div className="directions-container">
             <h3>Directions</h3>
             <p>{method}</p>
+            <button onClick={() => deleteRecipe(id)}>Delete recipe</button>
           </div>
         </div>
       </div>
       <div className="medium ui image">
-        <img src="https://1.bp.blogspot.com/-cdGSvr2xog4/X7mj8JFrUOI/AAAAAAAAiGY/r9SYXpIlEcYKKWzaDg8vK8CYsAsXNLwKgCNcBGAsYHQ/s768/Parker%2Bhouse%2Brolls%2Bplate.jpg" alt="your recipe pic" />
+        <img src={urls[selectedRecipe.id]} alt="your recipe pic" />
       </div>
     </Fragment>
   )

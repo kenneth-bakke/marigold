@@ -41,8 +41,7 @@ export default function App () {
   }
 
   const postRecipe = async (recipe) => {
-    try {
-      const response = await fetch(`${baseURL}/recipes/`, {
+    fetch(`${baseURL}/recipes/`, {
         method: 'POST',
         cache: 'no-cache',
         referrerPolicy: 'no-referrer',
@@ -52,13 +51,30 @@ export default function App () {
           'X-CSRFToken': csrftoken
         },
         body: JSON.stringify(recipe)
-      });
-      getRecipes();
-      selectRecipe(recipe);
-      setView(views[1])
-    } catch (err) {
-      console.error(err);
-    }
+      })
+      .then(res => {
+        getRecipes();
+        selectRecipe(recipe);
+        setView(views[1])
+      })
+      .catch(err => console.error(err));
+
+  }
+
+  const deleteRecipe = (id) => {
+    fetch(`${baseURL}/recipes/`, {
+      method: 'DELETE',
+      cache: 'no-cache',
+      referrerPolicy: 'no-referrer',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken
+      },
+      body: JSON.stringify(id)
+    })
+    .then(getRecipes())
+    .catch(err => console.error(err));
   }
 
   return (
@@ -73,9 +89,8 @@ export default function App () {
         <div className="ui container" >
           <Sidebar items={items} />
           {view === 'Form' ? <RecipeForm postRecipe={postRecipe} />
-          : view === 'Recipe' ? <RecipeView /> : null
+          : view === 'Recipe' ? <RecipeView deleteRecipe={deleteRecipe} /> : null
           }
-          {/* <RecipeView recipe={selectedRecipe} /> */}
         </div>
       </AppContext.Provider>
     </Fragment>
