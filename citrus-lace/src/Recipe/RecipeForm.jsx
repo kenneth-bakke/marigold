@@ -97,10 +97,7 @@ export default function RecipeForm({ postRecipe }) {
         <textarea onChange={(e) => updateRecipe(e, 'method')} placeholder="Method" ></textarea>
         <button onClick={(e) => saveRecipe(e)} >{saved ? 'Saved!' : 'SaveRecipe'}</button>
       </form>
-      {/* <h3>{recipe.title ? recipe.title : null}</h3>
-      <h4>{recipe.yield ? recipe.yield : null} {recipe.yieldType ? recipe.yieldType : null}</h4> */}
       <IngredientFieldList ingredients={ingredients} removeIngredient={removeIngredient}/>
-      {/* <h4>{recipe.method}</h4> */}
     </div>
   )
 }

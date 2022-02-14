@@ -52,7 +52,6 @@ export default function IngredientField({ id, updateIngredients }) {
     <Fragment key={id} >
       <div className="ingredient-input">
         <input type="text" name="Quantity" placeholder="Ingredient quantity" onChange={(e) => updateIngredient(e, 'quantity')} required="required" autoFocus={true} />
-        {/* <input type="text" name="Unit of Measurement" placeholder="Unit of Measurement" onChange={(e) => updateIngredient(e, 'uom')} required="required" /> */}
         {uomList(system)}
         <input type="text" name="Ingredient" placeholder="Ingredient name" onChange={(e) => updateIngredient(e, 'name')} required="required" />
         <button onClick={(e) => updateIngredients(e, ingredient)}>Add Ingredient</button>
