@@ -16,9 +16,7 @@ function Sidebar ({ items, depthStep, depth }) {
       <List  dense>
         {items.map((item, i) => (
           <SidebarItem
-            onClick={() => {
-              if (item.name === 'add recipe') setView('Form')
-            }}
+            onClick={addRecipe}}
             key={`${item.name}${i}`}
             depthStep={depthStep}
             depth={depth}
@@ -30,6 +28,14 @@ function Sidebar ({ items, depthStep, depth }) {
   )
 }
 
+function addRecipe() {
+  setView('Form')
+}
+
+function updateRecipe(item) {
+  setSelectedRecipe(item);
+  setView('Recipe')
+}
 
 function SidebarItem ({ label, items, depthStep = 10, depth = 0, ...rest }) {
   const { selectedRecipeContext , viewContext} = useContext(AppContext);
@@ -52,10 +58,7 @@ function SidebarItem ({ label, items, depthStep = 10, depth = 0, ...rest }) {
                 label={item.recipe_title}
                 depth={depth + 1}
                 depthStep={depthStep}
-                onClick={() => {
-                  setSelectedRecipe(item);
-                  setView('Recipe')
-                }}
+                onClick={() => updateRecipe(item)}
               />)
             }
           </List>
@@ -67,9 +70,7 @@ function SidebarItem ({ label, items, depthStep = 10, depth = 0, ...rest }) {
               key={subItem.name}
               depth={depth + 1}
               depthStep={depthStep}
-              onClick={() => {
-                if (subItem.name === 'add recipe') setView('Form')
-              }}
+              onClick={addRecipe}
               {...subItem}
             />
           ))}
